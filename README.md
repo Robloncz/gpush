@@ -1,7 +1,7 @@
 # gpush-ai 🚀
 
 An AI-powered CLI tool that automatically generates meaningful commit messages and streamlines your git workflow.
-test
+
 ## Features ✨
 
 - 🤖 AI-powered commit message generation using OpenAI's GPT models
@@ -11,48 +11,9 @@ test
 - ⚡ Support for force push and branch selection
 - 🧪 Dry run mode to preview commit messages
 
-## Development 🛠️
-
-### Local Setup
-```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/gpush-ai.git
-cd gpush-ai
-
-# Install dependencies
-npm install
-
-# Build the project
-npm run build
-
-# Link the package locally
-npm link
-```
-
-### Testing Locally
-1. After running `npm link`, the `gpush` command will be available globally
-2. Set up your OpenAI API key:
-```bash
-gpush config --set-key YOUR_API_KEY
-```
-3. Make some changes in any git repository
-4. Stage your changes:
-```bash
-git add .
-```
-5. Run gpush:
-```bash
-gpush push --dry-run  # Test without actually committing
-```
-
-### Development Commands
-```bash
-npm run build        # Build the TypeScript code
-npm run test         # Run tests
-npm run test:watch   # Run tests in watch mode
-```
-
 ## Installation 📦
+
+You can install gpush-ai directly from npm:
 
 ```bash
 npm install -g gpush-ai
@@ -100,7 +61,7 @@ gpush config --set-key YOUR_API_KEY
 gpush config --show-key
 
 # Set default AI model
-gpush ai:model gpt-4
+gpush ai:model gpt-4o
 ```
 
 ## Environment Variables 🔐
@@ -108,6 +69,47 @@ gpush ai:model gpt-4
 - `GPUSH_ENCRYPTION_KEY`: Custom encryption key for storing sensitive data
 - `OPENAI_MODEL`: Override default AI model
 - `MAX_DIFF_LENGTH`: Maximum diff length to send to OpenAI (default: 4000)
+
+## Development 🛠️
+
+### Local Setup
+
+1. Download or clone the repository:
+```bash
+# Using git
+git clone https://github.com/YOUR_USERNAME/gpush-ai.git
+
+# Or download the ZIP from GitHub
+```
+
+2. Install dependencies and build:
+```bash
+cd gpush-ai
+npm install
+npm run build
+```
+
+3. Link the package locally:
+```bash
+npm link
+```
+
+### Project Structure
+```
+gpush-ai/
+├── src/           # Source code
+├── dist/          # Compiled JavaScript
+├── bin/           # CLI executable
+├── test/          # Test files
+└── package.json   # Dependencies and scripts
+```
+
+### Development Commands
+```bash
+npm run build        # Build the TypeScript code
+npm run test         # Run tests
+npm run test:watch   # Run tests in watch mode
+```
 
 ## Requirements 📋
 
