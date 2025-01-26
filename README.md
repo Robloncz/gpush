@@ -1,7 +1,7 @@
 # gpush-ai 🚀
 
 An AI-powered CLI tool that automatically generates meaningful commit messages and streamlines your git workflow.
-
+test
 ## Features ✨
 
 - 🤖 AI-powered commit message generation using OpenAI's GPT models
