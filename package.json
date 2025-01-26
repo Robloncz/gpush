@@ -1,7 +1,7 @@
 {
   "name": "gpush-ai",
-  "version": "1.1.0",
-  "description": "AI-powered git commit message generator and push tool",
+  "version": "1.1.2",
+  "description": "AI-powered git commit message generator and push tool. For Windows users, run 'Set-ExecutionPolicy RemoteSigned -Scope CurrentUser' in PowerShell as admin first.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -26,24 +26,20 @@
     "@aws-sdk/client-bedrock-runtime": "^3.734.0",
     "@aws-sdk/credential-providers": "^3.734.0",
     "@clack/prompts": "^0.9.1",
-    "boxen": "^8.0.1",
     "chalk": "^5.3.0",
-    "cli-table3": "^0.6.5",
     "commander": "^12.0.0",
     "conf": "^12.0.0",
-    "figlet-promised": "^1.0.0",
-    "gradient-string": "^3.0.0",
-    "inquirer": "^9.2.12",
     "openai": "^4.0.0",
-    "ora": "^8.1.1",
     "simple-git": "^3.22.0"
   },
   "devDependencies": {
-    "@types/inquirer": "^9.0.7",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.0.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",
     "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
