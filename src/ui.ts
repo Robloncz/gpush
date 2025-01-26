@@ -1,14 +1,9 @@
-import { intro, outro, text, confirm, select, spinner as clackSpinner, Option } from '@clack/prompts';
-import gradient from 'gradient-string';
-import boxen from 'boxen';
-import ora, { Ora } from 'ora';
-import Table from 'cli-table3';
-import figlet from 'figlet-promised';
+import { intro, outro, text, confirm, select, spinner, Option } from '@clack/prompts';
+import chalk from 'chalk';
 import { AIProviderType } from './ai.js';
 
 export async function showWelcomeBanner() {
-  const text = await figlet('GPush AI');
-  console.log(gradient.pastel.multiline(text));
+  console.log(chalk.cyan('\n=== GPush AI ===\n'));
 }
 
 export type MenuAction = 'push' | 'config' | 'status' | 'exit';
@@ -114,63 +109,37 @@ export async function confirmAction(message: string): Promise<boolean> {
   return typeof result === 'boolean' ? result : false;
 }
 
-export function showSpinner(message: string): Ora {
-  return ora(message).start();
+export function showSpinner(message: string) {
+  const s = spinner();
+  s.start(message);
+  return s;
 }
 
 export function showSuccess(message: string): void {
-  console.log(boxen(gradient.pastel(message), {
-    padding: 1,
-    margin: 1,
-    borderStyle: 'round'
-  }));
+  console.log(chalk.green('\n✓ ' + message + '\n'));
 }
 
 export function showError(message: string): void {
-  console.log(boxen(gradient.passion(message), {
-    padding: 1,
-    margin: 1,
-    borderStyle: 'double',
-    borderColor: 'red'
-  }));
+  console.log(chalk.red('\n✗ ' + message + '\n'));
 }
 
 export function showStatus(config: Record<string, any>): void {
-  const table = new Table({
-    head: [gradient.pastel('Setting'), gradient.pastel('Value')],
-    style: {
-      head: [],
-      border: []
-    }
-  });
-
-  const provider = config.AI_PROVIDER || 'openai';
+  console.log(chalk.cyan('\n=== Current Configuration ===\n'));
   
-  // Always show the current provider
-  table.push(['AI Provider', provider]);
+  const provider = config.AI_PROVIDER || 'openai';
+  console.log(chalk.white('AI Provider: ') + chalk.cyan(provider));
 
   if (provider === 'openai') {
-    // Show OpenAI specific settings
     const apiKey = config.OPENAI_API_KEY;
     const model = config.OPENAI_MODEL || 'gpt-4o';
-    table.push(
-      ['OpenAI API Key', apiKey ? '*****' + apiKey.slice(-4) : 'Not configured'],
-      ['Model', model]
-    );
+    console.log(chalk.white('OpenAI API Key: ') + chalk.cyan(apiKey ? '*****' + apiKey.slice(-4) : 'Not configured'));
+    console.log(chalk.white('Model: ') + chalk.cyan(model));
   } else {
-    // Show Bedrock specific settings
     const model = config.BEDROCK_MODEL || 'anthropic.claude-3-5-sonnet-20240620-v1:0';
     const region = config.AWS_REGION || 'eu-central-1';
-    table.push(
-      ['Model', model],
-      ['AWS Region', region]
-    );
+    console.log(chalk.white('Model: ') + chalk.cyan(model));
+    console.log(chalk.white('AWS Region: ') + chalk.cyan(region));
   }
-
-  console.log('\n' + boxen(table.toString(), {
-    padding: 1,
-    margin: 1,
-    borderStyle: 'round',
-    borderColor: 'cyan'
-  }) + '\n');
+  
+  console.log();
 } 

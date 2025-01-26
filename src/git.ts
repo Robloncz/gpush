@@ -11,55 +11,87 @@ interface PushOptions {
   branch?: string;
 }
 
-export class GitManager {
-  private git: SimpleGit;
+export async function getStagedChanges(): Promise<string> {
+  const git: SimpleGit = simpleGit();
+  const spinner = showSpinner('Getting staged changes...');
 
-  constructor() {
-    this.git = simpleGit();
-  }
-
-  async getStagedDiff(): Promise<string> {
-    const spinner = showSpinner('Getting staged changes...');
-    try {
-      const diff = await this.git.diff(['--cached', '--diff-algorithm=minimal']);
-      spinner.succeed('Retrieved staged changes');
-      return truncateDiff(diff);
-    } catch (error) {
-      spinner.fail('Failed to get staged changes');
-      throw error;
+  try {
+    const status = await git.status();
+    const staged = status.staged;
+    
+    if (staged.length === 0) {
+      spinner.stop('No staged changes found');
+      throw new Error('No staged changes found. Use git add to stage your changes.');
     }
-  }
 
-  async commitAndPush(message: string, options: PushOptions = {}): Promise<void> {
-    const spinner = showSpinner('Committing and pushing changes...');
-    try {
-      await this.git.commit(message);
-      
-      const pushArgs: string[] = [];
-      if (options.force) pushArgs.push('--force');
-      if (options.branch) pushArgs.push('origin', options.branch);
-      await this.git.push(pushArgs);
-      
-      spinner.succeed('Changes committed and pushed successfully');
-    } catch (error) {
-      spinner.fail('Failed to commit and push changes');
-      throw error;
-    }
-  }
-
-  async hasChanges(): Promise<boolean> {
-    const status = await this.git.status();
-    return status.staged.length > 0;
+    const diff = await git.diff(['--cached']);
+    spinner.stop('Retrieved staged changes');
+    return diff;
+  } catch (error) {
+    spinner.stop('Failed to get staged changes');
+    throw error;
   }
 }
 
-// Singleton instance
-const gitManager = new GitManager();
+export async function commitAndPush(commitMessage: string): Promise<void> {
+  const git: SimpleGit = simpleGit();
+  const spinner = showSpinner('Committing and pushing changes...');
+
+  try {
+    await git.commit(commitMessage);
+    await git.push();
+    spinner.stop('Changes committed and pushed successfully');
+    showSuccess('Changes committed and pushed successfully');
+  } catch (error) {
+    spinner.stop('Failed to commit and push changes');
+    showError('Failed to commit and push changes');
+    throw error;
+  }
+}
+
+export async function handleGitPush(): Promise<void> {
+  try {
+    // Get staged changes
+    const stagedChanges = await getStagedChanges();
+    
+    // Generate commit message
+    const spinner = showSpinner('Generating commit message...');
+    let commitMessage: string;
+    
+    try {
+      commitMessage = await generateCommitMessage(stagedChanges);
+      spinner.stop('Generated commit message');
+      showSuccess(`Generated commit message:\n${commitMessage}`);
+    } catch (error) {
+      spinner.stop('Failed to generate commit message');
+      throw error;
+    }
+
+    // Confirm commit message
+    const confirmed = await confirmAction(`Use this commit message?\n\n${commitMessage}`);
+    
+    if (!confirmed) {
+      showError('Operation cancelled');
+      return;
+    }
+
+    // Commit and push
+    await commitAndPush(commitMessage);
+
+  } catch (error) {
+    if (error instanceof Error) {
+      showError(error.message);
+    } else {
+      showError('An unknown error occurred');
+    }
+    throw error;
+  }
+}
 
 export async function handlePushCommand(options: PushOptions = {}) {
   try {
     // Check for staged changes
-    const diff = await gitManager.getStagedDiff();
+    const diff = await getStagedChanges();
     if (!diff) {
       throw new GPushError('No staged changes found. Stage your changes first with `git add`', 1);
     }
@@ -68,7 +100,7 @@ export async function handlePushCommand(options: PushOptions = {}) {
     const spinner = showSpinner('Generating commit message...');
     try {
       const commitMessage = await generateCommitMessage(diff);
-      spinner.succeed('Generated commit message');
+      spinner.stop('Generated commit message');
       showSuccess(`Generated commit message:\n${commitMessage}`);
 
       if (options.dryRun) {
@@ -82,11 +114,10 @@ export async function handlePushCommand(options: PushOptions = {}) {
         process.exit(1);
       }
 
-      await gitManager.commitAndPush(commitMessage, options);
-      showSuccess('Changes committed and pushed successfully');
+      await commitAndPush(commitMessage);
       process.exit(0);
     } catch (error) {
-      spinner.fail('Operation failed');
+      spinner.stop('Failed to generate commit message');
       throw error;
     }
   } catch (error: unknown) {
