@@ -22,14 +22,19 @@ export const program = new Command();
 
 async function checkApiKey(): Promise<void> {
   const config = getConfig();
-  try {
-    config.OPENAI_API_KEY; // This will throw if key is not configured
-  } catch (error) {
-    const apiKey = await getApiKey();
-    if (!apiKey) throw new GPushError('API key is required', 1);
-    config.set('OPENAI_API_KEY', apiKey);
-    showSuccess('API key successfully stored');
+  const provider = config.get('AI_PROVIDER') || 'openai';
+
+  if (provider === 'openai') {
+    try {
+      config.OPENAI_API_KEY; // This will throw if key is not configured
+    } catch (error) {
+      const apiKey = await getApiKey();
+      if (!apiKey) throw new GPushError('OpenAI API key is required', 1);
+      config.set('OPENAI_API_KEY', apiKey);
+      showSuccess('OpenAI API key successfully stored');
+    }
   }
+  // For Bedrock, AWS credentials are handled by the SDK
 }
 
 async function handleInteractiveMode() {
@@ -43,79 +48,11 @@ async function handleInteractiveMode() {
         case 'push':
           await checkApiKey();
           await handlePushCommand({});
-          break;
+          return; // Exit after push completes
           
         case 'config':
-          while (true) {
-            const setting = await configureSettings();
-            if (setting === 'back') break;
-            
-            const config = getConfig();
-            switch (setting) {
-              case 'api_key':
-                const apiKey = await getApiKey();
-                if (apiKey) {
-                  config.set('OPENAI_API_KEY', apiKey);
-                  showSuccess('API key updated successfully');
-                }
-                break;
-                
-              case 'ai_provider':
-                const provider = await selectAIProvider();
-                if (provider && provider !== 'back') {
-                  config.set('AI_PROVIDER', provider);
-                  showSuccess(`AI provider set to ${String(provider)}`);
-                  
-                  // Prompt for model based on provider
-                  const model = provider === 'openai' 
-                    ? await selectOpenAIModel()
-                    : await selectBedrockModel();
-                    
-                  if (model && model !== 'back') {
-                    if (provider === 'openai') {
-                      config.set('OPENAI_MODEL', model);
-                    } else {
-                      config.set('BEDROCK_MODEL', model);
-                    }
-                    showSuccess(`AI model set to ${String(model)}`);
-                  }
-                  
-                  // If Bedrock is selected, prompt for region
-                  if (provider === 'bedrock') {
-                    const region = await selectAWSRegion();
-                    if (region && region !== 'back') {
-                      config.set('AWS_REGION', region);
-                      showSuccess(`AWS region set to ${String(region)}`);
-                    }
-                  }
-                }
-                break;
-                
-              case 'ai_model':
-                const currentProvider = config.get('AI_PROVIDER') || 'openai';
-                const newModel = currentProvider === 'openai'
-                  ? await selectOpenAIModel()
-                  : await selectBedrockModel();
-                  
-                if (newModel && newModel !== 'back') {
-                  if (currentProvider === 'openai') {
-                    config.set('OPENAI_MODEL', newModel);
-                  } else {
-                    config.set('BEDROCK_MODEL', newModel);
-                  }
-                  showSuccess(`AI model set to ${String(newModel)}`);
-                }
-                break;
-                
-              case 'aws_region':
-                const region = await selectAWSRegion();
-                if (region && region !== 'back') {
-                  config.set('AWS_REGION', region);
-                  showSuccess(`AWS region set to ${String(region)}`);
-                }
-                break;
-            }
-          }
+          // Reuse existing config command with interactive mode
+          await program.parseAsync(['node', 'gpush', 'config', '--interactive']);
           break;
           
         case 'status':
@@ -140,8 +77,7 @@ program
   .name('gpush')
   .description('AI-powered git commit message generator and push tool')
   .version('1.0.0', '-v, --version', 'Show version information')
-  .helpOption('-h, --help', 'Show help information')
-  .option('-c, --cli', 'Run in traditional CLI mode (non-interactive)');
+  .helpOption('-h, --help', 'Show help information');
 
 configureConfigCommands(program);
 configureAICommands(program);
@@ -153,27 +89,27 @@ program
   .option('-f, --force', 'Force push changes')
   .option('-b, --branch <branch>', 'Specify target branch')
   .action(async (options) => {
-    await checkApiKey();
     await handlePushCommand(options);
   });
 
-// Add hook to check API key before any command except config
+program
+  .command('status')
+  .description('Show current configuration')
+  .action(() => {
+    showStatus(getConfig());
+  });
+
+// Add hook to check API key before any command except config and status
 program.hook('preAction', async (thisCommand) => {
-  if (thisCommand.name() !== 'config') {
+  const noKeyCommands = ['config', 'status'];
+  if (!noKeyCommands.includes(thisCommand.name())) {
     await checkApiKey();
   }
 });
 
-// Run in interactive mode by default, unless CLI mode is explicitly requested
-if (process.argv.length <= 2 || !process.argv.includes('--cli')) {
+// Run in interactive mode only if no command is provided
+if (process.argv.length === 2) {
   handleInteractiveMode().catch((error) => {
-    showError('Unhandled error: ' + error.message);
-    process.exit(1);
-  });
-} else {
-  // Remove the --cli flag before parsing to avoid unknown option error
-  const args = process.argv.filter(arg => arg !== '--cli');
-  program.parseAsync(args).catch((error) => {
     showError('Unhandled error: ' + error.message);
     process.exit(1);
   });
