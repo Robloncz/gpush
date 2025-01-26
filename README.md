@@ -1,4 +1,4 @@
-# gpush-ai 🚀
+# gpush 🚀
 
 An AI-powered CLI tool that automatically generates meaningful commit messages and streamlines your git workflow.
 
@@ -6,120 +6,84 @@ An AI-powered CLI tool that automatically generates meaningful commit messages a
 
 - 🤖 AI-powered commit message generation using OpenAI's GPT models
 - 🔄 Seamless git workflow integration
-- 🔐 Secure API key storage with encryption
-- 🎨 Beautiful CLI interface with colored output
+- 🔐 Secure API key management
+- 🎨 Interactive CLI with colored output
 - ⚡ Support for force push and branch selection
 - 🧪 Dry run mode to preview commit messages
 
 ## Installation 📦
 
-You can install gpush-ai directly from npm:
-
 ```bash
-npm install -g gpush-ai
+npm install -g gpush
 ```
 
-## Setup 🔧
+## Quick Start 🚀
 
-1. Get your OpenAI API key from [OpenAI's platform](https://platform.openai.com/api-keys)
-2. Configure gpush with your API key:
-```bash
-gpush config --set-key YOUR_API_KEY
-```
+1. Stage your changes using `git add`
+2. Run `gpush push`
+3. On first run, you'll be prompted to enter your OpenAI API key
+4. Review the generated commit message
+5. Confirm to commit and push your changes
 
 ## Usage 💻
 
-### Basic Push
+### Basic Workflow
+
+1. Stage your changes:
+```bash
+git add .  # or stage specific files
+```
+
+2. Generate commit message and push:
 ```bash
 gpush push
 ```
-This will:
-1. Generate a commit message for your staged changes
-2. Show you the message
-3. Ask for confirmation
-4. Commit and push your changes
 
-### Options
-- `--dry-run` (`-d`): Preview the generated commit message without committing
-- `--force` (`-f`): Force push changes
-- `--branch <branch>` (`-b`): Specify target branch
+The tool will:
+1. Check for staged changes
+2. Generate a commit message using AI
+3. Show you the proposed message
+4. Ask for confirmation
+5. Commit and push your changes if confirmed
+
+### Command Options
 
 ```bash
-# Preview commit message
+# Preview commit message without committing
 gpush push --dry-run
 
-# Force push to a specific branch
+# Force push changes
+gpush push --force
+
+# Push to a specific branch
+gpush push --branch main
+
+# Combine options
 gpush push --force --branch main
 ```
 
 ### Configuration
+
 ```bash
 # Set OpenAI API key
 gpush config --set-key YOUR_API_KEY
 
-# Check API key status
+# View current API key status
 gpush config --show-key
 
-# Set default AI model
+# Set AI model (default: gpt-4o)
 gpush ai:model gpt-4o
-```
-
-## Environment Variables 🔐
-
-- `GPUSH_ENCRYPTION_KEY`: Custom encryption key for storing sensitive data
-- `OPENAI_MODEL`: Override default AI model
-- `MAX_DIFF_LENGTH`: Maximum diff length to send to OpenAI (default: 4000)
-
-## Development 🛠️
-
-### Local Setup
-
-1. Download or clone the repository:
-```bash
-# Using git
-git clone https://github.com/YOUR_USERNAME/gpush-ai.git
-
-# Or download the ZIP from GitHub
-```
-
-2. Install dependencies and build:
-```bash
-cd gpush-ai
-npm install
-npm run build
-```
-
-3. Link the package locally:
-```bash
-npm link
-```
-
-### Project Structure
-```
-gpush-ai/
-├── src/           # Source code
-├── dist/          # Compiled JavaScript
-├── bin/           # CLI executable
-├── test/          # Test files
-└── package.json   # Dependencies and scripts
-```
-
-### Development Commands
-```bash
-npm run build        # Build the TypeScript code
-npm run test         # Run tests
-npm run test:watch   # Run tests in watch mode
 ```
 
 ## Requirements 📋
 
 - Node.js >= 16
 - Git installed and configured
-- OpenAI API key
+- OpenAI API key ([Get one here](https://platform.openai.com/api-keys))
 
 ## Security 🔒
 
-Your OpenAI API key is stored securely using encryption. For additional security, you can set a custom encryption key using the `GPUSH_ENCRYPTION_KEY` environment variable.
+Your OpenAI API key is stored securely in your user configuration. Never share your API key or commit it to version control.
 
 ## License 📄
 
