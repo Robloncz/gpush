@@ -2,7 +2,7 @@ import { simpleGit } from 'simple-git';
 import { generateCommitMessage } from './ai.js';
 import { getConfig } from './config.js';
 import { truncateDiff } from './utils.js';
-import { showSpinner, showSuccess, showError } from './ui.js';
+import { showSpinner, showSuccess, showError, confirmAction } from './ui.js';
 
 const git = simpleGit();
 
@@ -55,6 +55,19 @@ export async function handlePushCommand(options: {
       return;
     }
 
+    // Show commit message and ask for confirmation
+    spinner.succeed('Generated commit message');
+    showSuccess(`Generated commit message:\n${commitMessage}`);
+    
+    const proceed = await confirmAction('Proceed with commit and push?');
+    if (!proceed) {
+      showError('Operation cancelled');
+      process.exit(1);
+    }
+
+    // Start a new spinner for commit/push
+    const pushSpinner = showSpinner('Committing and pushing changes...');
+    
     // Commit and push in one operation
     await git.commit(commitMessage);
     
@@ -63,8 +76,9 @@ export async function handlePushCommand(options: {
     if (options.branch) pushArgs.push('origin', options.branch);
     await git.push(pushArgs);
     
-    spinner.succeed('Changes committed and pushed successfully');
+    pushSpinner.succeed('Changes committed and pushed successfully');
     showSuccess(`Committed and pushed with message:\n${commitMessage}`);
+    process.exit(0); // Exit cleanly after successful push
   } catch (error: unknown) {
     spinner.fail('Operation failed');
     if (error instanceof Error) {
