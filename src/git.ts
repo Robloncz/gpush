@@ -59,7 +59,7 @@ export async function handlePushCommand(options: {
     // Combine commit and push into one operation with a single spinner
     const spinner2 = showSpinner('Committing and pushing changes...');
     try {
-      await git.add('.');
+      // Only commit what's already staged (don't add new files)
       await git.commit(commitMessage);
       
       const pushArgs: string[] = [];
