@@ -83,7 +83,7 @@ export async function handlePushCommand(options: PushOptions = {}) {
       }
 
       await gitManager.commitAndPush(commitMessage, options);
-      showSuccess(`Committed and pushed with message:\n${commitMessage}`);
+      showSuccess('Changes committed and pushed successfully');
       process.exit(0);
     } catch (error) {
       spinner.fail('Operation failed');

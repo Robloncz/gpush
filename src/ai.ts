@@ -27,7 +27,7 @@ class OpenAIProvider implements AIProvider {
         messages: [
           {
             role: 'system',
-            content: 'Generate a concise, conventional commit message for this diff. Focus on technical accuracy and clarity.'
+            content: 'You are a commit message generator. Respond ONLY with a concise, conventional commit message. No explanations or additional text.'
           },
           {
             role: 'user',
@@ -66,7 +66,7 @@ class BedrockProvider implements AIProvider {
         max_tokens: 200,
         messages: [{
           role: "user",
-          content: "Generate a concise, conventional commit message for this diff. Focus on technical accuracy and clarity.\n\nDiff:\n" + diff
+          content: "Write ONLY a concise, conventional commit message for this diff. No explanations or additional text.\n\nDiff:\n" + diff
         }]
       };
 
