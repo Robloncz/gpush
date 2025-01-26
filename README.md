@@ -90,4 +90,4 @@ Your OpenAI API key is stored securely in your user configuration. Never share y
 MIT
 
 ---
-Made with ❤️ using OpenAI's GPT models 
+Made with ❤️ using DeepSeek, Claude and CursorAI
