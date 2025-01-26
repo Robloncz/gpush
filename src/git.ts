@@ -56,20 +56,23 @@ export async function handlePushCommand(options: {
       return;
     }
 
-    const commitSpinner = showSpinner('Committing changes...');
-    await git.add('.');
-    await git.commit(commitMessage);
-    commitSpinner.succeed('Changes committed');
-    
-    const pushSpinner = showSpinner('Pushing changes...');
-    const pushArgs: string[] = [];
-    if (options.force) pushArgs.push('--force');
-    if (options.branch) pushArgs.push('origin', options.branch);
-
-    await git.push(pushArgs);
-    pushSpinner.succeed('Changes pushed successfully');
-    
-    showSuccess('All changes have been committed and pushed! 🎉');
+    // Combine commit and push into one operation with a single spinner
+    const spinner2 = showSpinner('Committing and pushing changes...');
+    try {
+      await git.add('.');
+      await git.commit(commitMessage);
+      
+      const pushArgs: string[] = [];
+      if (options.force) pushArgs.push('--force');
+      if (options.branch) pushArgs.push('origin', options.branch);
+      await git.push(pushArgs);
+      
+      spinner2.succeed('Changes committed and pushed successfully');
+      showSuccess('All done! 🎉');
+    } catch (error) {
+      spinner2.fail('Failed to commit and push changes');
+      throw error;
+    }
   } catch (error: unknown) {
     if (error instanceof Error) {
       showError(error.message);
