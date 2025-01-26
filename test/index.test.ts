@@ -6,7 +6,7 @@ describe('GPush Utilities', () => {
     test('should truncate long diffs', () => {
       const longDiff = 'a'.repeat(5000);
       const result = truncateDiff(longDiff);
-      expect(result.length).toBe(4000 + 23); // 23 for truncation message
+      expect(result.length).toBe(4000 + 30); // Length of '\n... (truncated due to length)'
     });
 
     test('should leave short diffs unchanged', () => {
