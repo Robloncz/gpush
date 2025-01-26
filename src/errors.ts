@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import { showError } from './ui.js';
 
 export class GPushError extends Error {
   constructor(message: string, public exitCode: number = 1) {
@@ -10,10 +10,10 @@ export class GPushError extends Error {
 export function configureErrorHandling() {
   process.on('uncaughtException', (error) => {
     if (error instanceof GPushError) {
-      console.error(chalk.red(`Error (${error.exitCode}):`), error.message);
+      showError(`Error (${error.exitCode}): ${error.message}`);
       process.exit(error.exitCode);
     }
-    console.error(chalk.red('Unhandled Error:'), error);
+    showError('Unhandled Error: ' + error.message);
     process.exit(1);
   });
 } 

@@ -68,7 +68,7 @@ export async function generateCommitMessage(diff: string): Promise<string> {
   const provider = config.AI_PROVIDER || 'openai';
 
   if (provider === 'bedrock') {
-    const model = config.BEDROCK_MODEL || 'anthropic.claude-3-sonnet-20240229-v1:0';
+    const model = config.BEDROCK_MODEL || 'anthropic.claude-3-5-sonnet-20240620-v1:0';
     return generateWithBedrock(diff, model as BedrockModel);
   }
 
@@ -119,7 +119,7 @@ export function configureAICommands(program: Command) {
   program
     .command('ai:model')
     .description('Set default AI model')
-    .argument('<model>', 'Model name (e.g., gpt-4, anthropic.claude-v2)')
+    .argument('<model>', 'Model name (e.g., gpt-4o, anthropic.claude-3-5-sonnet-20240620-v1:0)')
     .action((model: string) => {
       const provider = getConfig().get('AI_PROVIDER') || 'openai';
       if (provider === 'openai') {

@@ -2,7 +2,7 @@
 
 Generate perfect commit messages effortlessly with AI!
 
-gpush leverages OpenAI GPT-4 or AWS Bedrock Claude models to craft clear, conventional commit messages and push your changes—all in one command.
+gpush leverages OpenAI GPT-4o or AWS Bedrock Claude models to craft clear, conventional commit messages and push your changes—all in one command.
 
 ## 🚀 Features
 
@@ -35,7 +35,7 @@ gpush config --set-key sk-your-openai-key-here
 | Command | Description | Example |
 |---------|-------------|---------|
 | `gpush ai:provider <provider>` | Set provider (openai or bedrock) | `gpush ai:provider bedrock` |
-| `gpush ai:model <model>` | Set model (e.g., gpt-4, Claude models) | `gpush ai:model anthropic.claude-3-haiku-20240307-v1:0` |
+| `gpush ai:model <model>` | Set model (e.g., gpt-4o, Claude models) | `gpush ai:model anthropic.claude-3-haiku-20240307-v1:0` |
 | `gpush ai:aws-region <region>` | Set AWS region for Bedrock | `gpush ai:aws-region us-east-1` |
 
 ### 3. Verify Configuration
@@ -106,11 +106,11 @@ Contributions welcome!
 MIT
 
 ## ⚡ Inspired by
-- Conventional Commits
-- OpenAI
-- AWS Bedrock
+- CursorAI
+- Me, myself and I
+- Mom
 
 ---
 
 Happy committing! ✨  
-Let AI handle the boring stuff while you focus on coding.
+Made with ❤️ by Me
