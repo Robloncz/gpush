@@ -1,6 +1,6 @@
 {
   "name": "gpush-ai",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "AI-powered git commit message generator and push tool. For Windows users, run 'Set-ExecutionPolicy RemoteSigned -Scope CurrentUser' in PowerShell as admin first.",
   "type": "module",
   "main": "dist/index.js",
