@@ -24,7 +24,7 @@ npm install -g gpush-ai
 - API key for OpenAI or AWS credentials for Bedrock access
 
 ## ⚙️ Configuration
-
+test
 ### 1. Set API Key (OpenAI)
 ```bash
 gpush config --set-key sk-your-openai-key-here

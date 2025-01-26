@@ -1,4 +1,7 @@
-#!/usr/bin/env -S node --no-warnings
+#!/usr/bin/env node
+
+// Suppress all deprecation warnings
+process.emitWarning = () => {};
 
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
