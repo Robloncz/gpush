@@ -1,6 +1,6 @@
 {
   "name": "gpush-ai",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "AI-powered git commit message generator and push tool",
   "type": "module",
   "main": "dist/index.js",
@@ -20,7 +20,7 @@
     "openai",
     "cli"
   ],
-  "author": "Your Name",
+  "author": "René Oblonczek",
   "license": "MIT",
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.734.0",

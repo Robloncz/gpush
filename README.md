@@ -1,93 +1,109 @@
-# gpush 🚀
+🌟 gpush - AI-Powered Git Commit Assistant
+Generate perfect commit messages effortlessly with AI!
+gpush leverages OpenAI GPT-4 or AWS Bedrock Claude models to craft clear, conventional commit messages and push your changes—all in one command.
 
-An AI-powered CLI tool that automatically generates meaningful commit messages and streamlines your git workflow.
+🚀 Features
+AI-Driven Commit Messages: Automatically generates concise, conventional commits from staged changes.
 
-## Features ✨
+Multi-Provider Support: Choose between OpenAI or AWS Bedrock (Claude models).
 
-- 🤖 AI-powered commit message generation using OpenAI's GPT models
-- 🔄 Seamless git workflow integration
-- 🔐 Secure API key management
-- 🎨 Interactive CLI with colored output
-- ⚡ Support for force push and branch selection
-- 🧪 Dry run mode to preview commit messages
+Secure Configuration: Encrypted API key storage and environment variables.
 
-## Installation 📦
+Dry-Run Mode: Preview generated messages without committing.
 
-```bash
-npm install -g gpush
-```
+Smart Diff Truncation: Handles large diffs gracefully to stay within AI token limits.
 
-## Quick Start 🚀
+📦 Installation
+bash
+Copy
+npm install -g gpush-ai
+Prerequisites:
 
-1. Stage your changes using `git add`
-2. Run `gpush push`
-3. On first run, you'll be prompted to enter your OpenAI API key
-4. Review the generated commit message
-5. Confirm to commit and push your changes
+Node.js v18+
 
-## Usage 💻
+Git installed
 
-### Basic Workflow
+API key for OpenAI or AWS credentials for Bedrock access
 
-1. Stage your changes:
-```bash
-git add .  # or stage specific files
-```
-
-2. Generate commit message and push:
-```bash
+⚙️ Configuration
+1. Set API Key (OpenAI)
+bash
+Copy
+gpush config --set-key sk-your-openai-key-here
+2. Choose AI Provider & Model
+Command	Description	Example
+gpush ai:provider <provider>	Set provider (openai or bedrock)	gpush ai:provider bedrock
+gpush ai:model <model>	Set model (e.g., gpt-4o, Claude models)	gpush ai:model anthropic.claude-3-haiku-20240307-v1:0
+gpush ai:aws-region <region>	Set AWS region for Bedrock	gpush ai:aws-region us-east-1
+3. Verify Configuration
+bash
+Copy
+gpush status
+🛠️ Usage
+Generate & Push Commit
+bash
+Copy
 gpush push
-```
+Options:
 
-The tool will:
-1. Check for staged changes
-2. Generate a commit message using AI
-3. Show you the proposed message
-4. Ask for confirmation
-5. Commit and push your changes if confirmed
+--dry-run: Preview message without committing
 
-### Command Options
+--force: Force push changes
 
-```bash
-# Preview commit message without committing
-gpush push --dry-run
+--branch <name>: Specify target branch
 
-# Force push changes
-gpush push --force
+Example Workflow:
 
-# Push to a specific branch
-gpush push --branch main
+bash
+Copy
+git add .
+gpush push --dry-run  # Preview message
+gpush push            # Commit and push
+🔍 All Commands
+Command	Description
+gpush push	Main command to generate and push commits
+gpush ai:provider	Switch between OpenAI/Bedrock
+gpush ai:model	Set default AI model
+gpush ai:aws-region	Configure AWS region for Bedrock
+gpush config	Manage API key
+gpush status	Show current configuration
+🌍 Environment Variables
+Variable	Description	Default
+MAX_DIFF_LENGTH	Truncate diffs longer than this	4000
+GPUSH_ENCRYPTION_KEY	Custom encryption key for config	-
+🚨 Troubleshooting
+Common Issues:
 
-# Combine options
-gpush push --force --branch main
-```
+"No API key configured": Run gpush config --set-key
 
-### Configuration
+AWS Bedrock Access Denied: Ensure IAM permissions include bedrock:InvokeModel
 
-```bash
-# Set OpenAI API key
-gpush config --set-key YOUR_API_KEY
+Long Diffs: Increase MAX_DIFF_LENGTH if truncation occurs
 
-# View current API key status
-gpush config --show-key
+Error Codes:
 
-# Set AI model (default: gpt-4o)
-gpush ai:model gpt-4o
-```
+1: Configuration error
 
-## Requirements 📋
+3: AI generation failure
 
-- Node.js >= 16
-- Git installed and configured
-- OpenAI API key ([Get one here](https://platform.openai.com/api-keys))
+4: API connection issue
 
-## Security 🔒
+🔒 Security
+API keys are encrypted using conf
 
-Your OpenAI API key is stored securely in your user configuration. Never share your API key or commit it to version control.
+AWS credentials use the default AWS SDK credential chain
 
-## License 📄
+🤝 Contributing
+Contributions welcome!
 
-MIT
+Fork the repository
 
----
-Made with ❤️ using DeepSeek, Claude and CursorAI
+Create a feature branch
+
+Submit a PR with tests and documentation updates
+
+📄 License: MIT
+⚡ Inspired by: Conventional Commits, OpenAI, AWS Bedrock
+
+Happy committing! ✨
+Let AI handle the boring stuff while you focus on coding.
