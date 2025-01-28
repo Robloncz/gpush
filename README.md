@@ -2,7 +2,7 @@
 
 Generate perfect commit messages effortlessly with AI!
 
-gpush leverages OpenAI GPT-4o or AWS Bedrock Claude models to craft clear, conventional commit messages and push your changes—all in one command.
+gpush leverages  AWS Bedrock Anthropic or OpenAI models to craft clear, conventional commit messages and push your changes—all in one command.
 
 ## 🚀 Features
 
@@ -25,7 +25,7 @@ npm install -g gpush-ai
 
 ## ⚙️ Configuration
 test
-### 1. Set API Key (OpenAI)
+### 1. Set API Key 
 ```bash
 gpush config --set-key sk-your-openai-key-here
 ```
